@@ -6,7 +6,7 @@
 - npm 10+
 - PostgreSQL 16+
 
-## Planned Setup
+## Setup
 
 1. Install dependencies from the repository root:
 
@@ -35,19 +35,20 @@ npm run prisma:migrate
 npm run prisma:seed
 ```
 
-4. Start the API:
+4. Start the API and frontend together:
+
+```bash
+npm run dev
+```
+
+Or start each workspace separately:
 
 ```bash
 npm run dev --workspace backend
-```
-
-5. Start the front-end:
-
-```bash
 npm run dev --workspace frontend
 ```
 
-6. Open the app:
+5. Open the app:
 
 ```text
 http://localhost:5173
@@ -70,6 +71,16 @@ npm run test --workspace backend
 npm run test --workspace frontend
 npm run test:e2e --workspace frontend
 ```
+
+## Local PostgreSQL Notes
+
+If the database/user from `DATABASE_URL` does not exist yet, create it before running migrations. One local option is:
+
+```bash
+createdb tattoosense
+```
+
+For Docker-based local setup, expose PostgreSQL on port `5432` and keep `backend/.env` aligned with the container credentials.
 
 ## API Contract
 

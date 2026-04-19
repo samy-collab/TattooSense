@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum QuizCategory {
+  music
+  culture
+  personal_style
+  body_placement
+  size
+  visibility
+  composition
+  emotion
+}
+
+enum QuizInputType {
+  single_choice
+  multi_choice
+  scale
+  free_text
+}
+
+enum RecommendationSessionStatus {
+  completed
+}
+
+model QuizQuestion {
+  id        String        @id @default(uuid()) @db.Uuid
+  key       String        @unique
+  title     String
+  description String?
+  category  QuizCategory
+  inputType QuizInputType
+  isRequired Boolean      @default(true)
+  sortOrder Int
+  isActive  Boolean       @default(true)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  options AnswerOption[]
+  compatibilityRules CompatibilityRule[]
+  recommendationAnswers RecommendationAnswer[]
+}
+
+model AnswerOption {
+  id          String       @id @default(uuid()) @db.Uuid
+  questionId  String       @db.Uuid
+  key         String
+  label       String
+  description String?
+  sortOrder   Int
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  question QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  compatibilityRules CompatibilityRule[]
+  recommendationAnswerOptions RecommendationAnswerOption[]
+
+  @@unique([questionId, key])
+  @@index([questionId, sortOrder])
+}
+
+model TattooStyle {
+  id              String   @id @default(uuid()) @db.Uuid
+  key             String   @unique
+  name            String
+  summary         String
+  characteristics String[]
+  visualTraits    String[]
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  compatibilityRules CompatibilityRule[]
+  recommendationItems RecommendationItem[]
+}
+
+model CompatibilityRule {
+  id             String   @id @default(uuid()) @db.Uuid
+  styleId        String   @db.Uuid
+  questionId     String?  @db.Uuid
+  answerOptionId String?  @db.Uuid
+  condition      Json?
+  weight         Int
+  reasonTemplate String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  style TattooStyle @relation(fields: [styleId], references: [id], onDelete: Cascade)
+  question QuizQuestion? @relation(fields: [questionId], references: [id], onDelete: SetNull)
+  answerOption AnswerOption? @relation(fields: [answerOptionId], references: [id], onDelete: SetNull)
+
+  @@index([styleId, isActive])
+  @@index([answerOptionId])
+}
+
+model RecommendationSession {
+  id              String   @id @default(uuid()) @db.Uuid
+  anonymousUserId String?  @db.Uuid
+  userId          String?  @db.Uuid
+  status          RecommendationSessionStatus @default(completed)
+  createdAt       DateTime @default(now())
+
+  answers RecommendationAnswer[]
+  items RecommendationItem[]
+}
+
+model RecommendationAnswer {
+  id         String   @id @default(uuid()) @db.Uuid
+  sessionId  String   @db.Uuid
+  questionId String   @db.Uuid
+  textValue  String?
+  scaleValue Int?
+  createdAt  DateTime @default(now())
+
+  session RecommendationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  question QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Restrict)
+  selectedOptions RecommendationAnswerOption[]
+
+  @@index([sessionId])
+}
+
+model RecommendationAnswerOption {
+  answerId String @db.Uuid
+  optionId String @db.Uuid
+
+  answer RecommendationAnswer @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  option AnswerOption @relation(fields: [optionId], references: [id], onDelete: Restrict)
+
+  @@id([answerId, optionId])
+}
+
+model RecommendationItem {
+  id                   String   @id @default(uuid()) @db.Uuid
+  sessionId            String   @db.Uuid
+  styleId              String   @db.Uuid
+  rank                 Int
+  score                Int
+  compatibilityPercent Int
+  explanation          String
+  matchedSignals       Json
+  createdAt            DateTime @default(now())
+
+  session RecommendationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  style TattooStyle @relation(fields: [styleId], references: [id], onDelete: Restrict)
+
+  @@unique([sessionId, rank])
+  @@index([sessionId])
+}

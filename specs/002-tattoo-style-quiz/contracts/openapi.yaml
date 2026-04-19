@@ -150,7 +150,7 @@ components:
             $ref: "#/components/schemas/Recommendation"
         disclaimer:
           type: string
-          example: Recommendations are aesthetic guidance only and do not replace professional tattoo advice.
+          example: As recomendacoes do TattooSense sao apenas orientacao estetica e nao substituem conversa com tatuador profissional, nem conselho de saude, seguranca ou juridico.
     Recommendation:
       type: object
       required: [style, rank, score, compatibilityPercent, explanation, matchedSignals]
