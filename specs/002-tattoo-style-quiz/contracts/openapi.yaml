@@ -1,0 +1,208 @@
+openapi: 3.1.0
+info:
+  title: TattooSense API
+  version: 0.1.0
+  description: REST API for the TattooSense style quiz MVP.
+servers:
+  - url: http://localhost:3333
+paths:
+  /api/quiz:
+    get:
+      summary: Get active quiz questions and answer options
+      operationId: getQuiz
+      responses:
+        "200":
+          description: Active quiz definition
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuizResponse"
+  /api/styles:
+    get:
+      summary: Get active tattoo styles
+      operationId: getStyles
+      responses:
+        "200":
+          description: Active style catalog
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [styles]
+                properties:
+                  styles:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/TattooStyle"
+  /api/recommendations:
+    post:
+      summary: Submit quiz answers and receive style recommendations
+      operationId: createRecommendation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRecommendationRequest"
+      responses:
+        "201":
+          description: Recommendation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecommendationResponse"
+        "422":
+          description: Validation errors for incomplete or invalid answers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+components:
+  schemas:
+    QuizResponse:
+      type: object
+      required: [questions]
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuizQuestion"
+    QuizQuestion:
+      type: object
+      required: [id, key, title, category, inputType, isRequired, options]
+      properties:
+        id:
+          type: string
+          format: uuid
+        key:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        category:
+          type: string
+          enum: [music, culture, personal_style, body_placement, size, visibility, composition, emotion]
+        inputType:
+          type: string
+          enum: [single_choice, multi_choice, scale, free_text]
+        isRequired:
+          type: boolean
+        options:
+          type: array
+          items:
+            $ref: "#/components/schemas/AnswerOption"
+    AnswerOption:
+      type: object
+      required: [id, key, label]
+      properties:
+        id:
+          type: string
+          format: uuid
+        key:
+          type: string
+        label:
+          type: string
+        description:
+          type: string
+          nullable: true
+    CreateRecommendationRequest:
+      type: object
+      required: [answers]
+      properties:
+        anonymousUserId:
+          type: string
+          format: uuid
+          nullable: true
+        answers:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/SubmittedAnswer"
+    SubmittedAnswer:
+      type: object
+      required: [questionKey]
+      properties:
+        questionKey:
+          type: string
+        selectedOptionKeys:
+          type: array
+          items:
+            type: string
+        textValue:
+          type: string
+        scaleValue:
+          type: integer
+          minimum: 1
+          maximum: 5
+    RecommendationResponse:
+      type: object
+      required: [sessionId, recommendations, disclaimer]
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+        recommendations:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/Recommendation"
+        disclaimer:
+          type: string
+          example: Recommendations are aesthetic guidance only and do not replace professional tattoo advice.
+    Recommendation:
+      type: object
+      required: [style, rank, score, compatibilityPercent, explanation, matchedSignals]
+      properties:
+        style:
+          $ref: "#/components/schemas/TattooStyle"
+        rank:
+          type: integer
+          minimum: 1
+        score:
+          type: integer
+        compatibilityPercent:
+          type: integer
+          minimum: 0
+          maximum: 100
+        explanation:
+          type: string
+        matchedSignals:
+          type: array
+          items:
+            type: string
+    TattooStyle:
+      type: object
+      required: [key, name, summary, characteristics, visualTraits]
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+        summary:
+          type: string
+        characteristics:
+          type: array
+          items:
+            type: string
+        visualTraits:
+          type: array
+          items:
+            type: string
+    ValidationErrorResponse:
+      type: object
+      required: [message, issues]
+      properties:
+        message:
+          type: string
+        issues:
+          type: array
+          items:
+            type: object
+            required: [questionKey, message]
+            properties:
+              questionKey:
+                type: string
+              message:
+                type: string
