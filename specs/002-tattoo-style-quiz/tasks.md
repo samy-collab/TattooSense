@@ -5,7 +5,7 @@
 
 **Tests**: Included because the specification defines mandatory testing scenarios and the plan defines Vitest, React Testing Library, and Playwright.
 
-**Organization**: Tasks are grouped by Spec Kit phase and user story, while preserving the requested work areas: setup, backend, database, frontend, frontend-backend integration, tests, and final refinements.
+**Organization**: Tasks are grouped by Spec Kit phase and user story, while preserving the requested work areas: setup, backend TypeScript, PostgreSQL database, business recommendation logic, React frontend, frontend-backend integration, tests/validation, and final refinements.
 
 ## Phase 1: Setup do Projeto (Shared Infrastructure)
 
@@ -122,27 +122,39 @@
 
 ---
 
-## Phase 6: Testes and Integração Frontend-Backend
+## Phase 6: Integração Frontend-Backend
 
 **Purpose**: Validate the full stack against the OpenAPI contract and quickstart flow.
 
-- [ ] T050 Create backend Vitest configuration with test database environment support in `/home/acer/Área de trabalho/TattooSense/backend/vitest.config.ts`
-- [ ] T051 Create frontend Vitest and React Testing Library setup in `/home/acer/Área de trabalho/TattooSense/frontend/tests/setup.ts`
-- [ ] T052 Create Playwright configuration for local frontend and backend dev servers in `/home/acer/Área de trabalho/TattooSense/frontend/playwright.config.ts`
-- [ ] T053 Add root test orchestration scripts for backend unit/integration/contract, frontend unit, and frontend e2e runs in `/home/acer/Área de trabalho/TattooSense/package.json`
-- [ ] T054 Validate the MVP quickstart commands and document any required local PostgreSQL setup adjustments in `/home/acer/Área de trabalho/TattooSense/specs/002-tattoo-style-quiz/quickstart.md`
+- [ ] T050 Add cross-workspace dev orchestration scripts for running backend and frontend together in `/home/acer/Área de trabalho/TattooSense/package.json`
+- [ ] T051 Verify frontend API base URL handling for local backend integration in `/home/acer/Área de trabalho/TattooSense/frontend/src/services/tattooSenseApi.ts`
+- [ ] T052 Wire backend CORS origin and frontend dev server expectations into environment documentation in `/home/acer/Área de trabalho/TattooSense/backend/.env.example`
+- [ ] T053 Validate the MVP quickstart commands and document any required local PostgreSQL setup adjustments in `/home/acer/Área de trabalho/TattooSense/specs/002-tattoo-style-quiz/quickstart.md`
+- [ ] T054 Confirm the OpenAPI contract matches implemented routes, status codes, and response shapes in `/home/acer/Área de trabalho/TattooSense/specs/002-tattoo-style-quiz/contracts/openapi.yaml`
 
 ---
 
-## Phase 7: Refinamentos Finais and Cross-Cutting Concerns
+## Phase 7: Testes e Validações
+
+**Purpose**: Configure and run the automated checks required by the plan and quickstart.
+
+- [ ] T055 Create backend Vitest configuration with test database environment support in `/home/acer/Área de trabalho/TattooSense/backend/vitest.config.ts`
+- [ ] T056 Create frontend Vitest and React Testing Library setup in `/home/acer/Área de trabalho/TattooSense/frontend/tests/setup.ts`
+- [ ] T057 Create Playwright configuration for local frontend and backend dev servers in `/home/acer/Área de trabalho/TattooSense/frontend/playwright.config.ts`
+- [ ] T058 Add root test orchestration scripts for backend unit/integration/contract, frontend unit, and frontend e2e runs in `/home/acer/Área de trabalho/TattooSense/package.json`
+- [ ] T059 Run the planned validation commands and record any remaining manual verification notes in `/home/acer/Área de trabalho/TattooSense/specs/002-tattoo-style-quiz/quickstart.md`
+
+---
+
+## Phase 8: Refinamentos Finais and Cross-Cutting Concerns
 
 **Purpose**: Final polish for documentation, maintainability, performance, and production readiness.
 
-- [ ] T055 [P] Update project README with TattooSense purpose, architecture, setup, scripts, and MVP verification flow in `/home/acer/Área de trabalho/TattooSense/README.md`
-- [ ] T056 [P] Document database schema, seed catalog, and migration workflow in `/home/acer/Área de trabalho/TattooSense/database/README.md`
-- [ ] T057 Review recommendation copy to ensure all results are aesthetic guidance only and not professional health, legal, safety, or tattoo advice in `/home/acer/Área de trabalho/TattooSense/backend/src/services/recommendationService.ts`
-- [ ] T058 Optimize quiz and recommendation API queries to keep local recommendation generation under the 300 ms p95 goal in `/home/acer/Área de trabalho/TattooSense/backend/src/repositories/recommendationRepository.ts`
-- [ ] T059 Run formatting, linting, backend tests, frontend tests, and e2e tests; fix failures in affected files under `/home/acer/Área de trabalho/TattooSense/frontend/`, `/home/acer/Área de trabalho/TattooSense/backend/`, `/home/acer/Área de trabalho/TattooSense/database/`, and `/home/acer/Área de trabalho/TattooSense/shared/`
+- [ ] T060 [P] Update project README with TattooSense purpose, architecture, setup, scripts, and MVP verification flow in `/home/acer/Área de trabalho/TattooSense/README.md`
+- [ ] T061 [P] Document database schema, seed catalog, and migration workflow in `/home/acer/Área de trabalho/TattooSense/database/README.md`
+- [ ] T062 Review recommendation copy to ensure all results are aesthetic guidance only and not professional health, legal, safety, or tattoo advice in `/home/acer/Área de trabalho/TattooSense/backend/src/services/recommendationService.ts`
+- [ ] T063 Optimize quiz and recommendation API queries to keep local recommendation generation under the 300 ms p95 goal in `/home/acer/Área de trabalho/TattooSense/backend/src/repositories/recommendationRepository.ts`
+- [ ] T064 Run formatting, linting, backend tests, frontend tests, and e2e tests; fix failures documented in `/home/acer/Área de trabalho/TattooSense/specs/002-tattoo-style-quiz/quickstart.md`
 
 ---
 
@@ -155,8 +167,9 @@
 - **Phase 3 US1 Complete Tattoo Style Quiz**: Depends on Phase 2; MVP scope.
 - **Phase 4 US2 Receive Compatible Style Recommendations**: Depends on Phase 2 and integrates naturally after US1 UI submission exists.
 - **Phase 5 US3 Explore Recommendations Visually**: Depends on US2 recommendation response shape.
-- **Phase 6 Testes and Integração Frontend-Backend**: Depends on implemented stories, though config tasks can begin after Phase 1.
-- **Phase 7 Refinamentos Finais**: Depends on selected story scope being complete.
+- **Phase 6 Integração Frontend-Backend**: Depends on implemented stories, though orchestration and environment tasks can begin after Phase 1.
+- **Phase 7 Testes e Validações**: Depends on implemented stories and integration configuration.
+- **Phase 8 Refinamentos Finais**: Depends on selected story scope being complete.
 
 ### User Story Dependencies
 
@@ -182,7 +195,7 @@
 - US1 component task T027 can run in parallel with backend tasks T023-T025 after contracts exist.
 - US2 repository tasks T034-T035 can run in parallel with style route task T039 after Prisma schema exists.
 - US3 tasks T045-T046 can run in parallel with test tasks T042-T044 after recommendation contracts exist.
-- Documentation tasks T055-T056 can run in parallel during final refinements.
+- Documentation tasks T060-T061 can run in parallel during final refinements.
 
 ---
 
@@ -234,12 +247,12 @@ Task: "T046 [P] [US3] Build recommendation style card with compatibility, explan
 ### Scope Mapping Requested by User
 
 - **Setup do projeto**: T001-T007
-- **Backend**: T012-T017, T023-T025, T034-T039, T057-T058
-- **Banco de dados**: T008-T010, T015, T035, T056
+- **Backend**: T012-T017, T023-T025, T034-T039, T052, T055, T062-T063
+- **Banco de dados**: T008-T010, T015, T035, T061
 - **Frontend**: T018-T019, T026-T030, T040-T049
-- **Integração entre frontend e backend**: T030, T040-T041, T049, T052-T054
-- **Testes**: T020-T022, T031-T033, T042-T044, T050-T053, T059
-- **Refinamentos finais**: T055-T059
+- **Integração entre frontend e backend**: T030, T040-T041, T049-T054
+- **Testes**: T020-T022, T031-T033, T042-T044, T055-T059, T064
+- **Refinamentos finais**: T060-T064
 
 ---
 
