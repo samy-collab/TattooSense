@@ -31,6 +31,7 @@ describe("RecommendationResults", () => {
     );
 
     expect(screen.getByText("Fine Line")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Referencia visual de tatuagem Fine Line" })).toBeInTheDocument();
     expect(screen.getByText("91%")).toBeInTheDocument();
     expect(screen.getByText("Orientacao estetica apenas.")).toBeInTheDocument();
   });

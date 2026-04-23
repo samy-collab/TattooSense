@@ -265,11 +265,19 @@ textarea {
   display: grid;
   align-content: start;
   gap: 0.8rem;
-  min-height: 440px;
+  min-height: 600px;
   padding: 1.1rem;
   border: 1px solid #d8d0c3;
   border-radius: 8px;
   background: #fffdf8;
+}
+
+.recommendation-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 6px;
+  object-fit: cover;
+  background: #e3ddd2;
 }
 
 .card-topline {
